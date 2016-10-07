@@ -1,13 +1,16 @@
 package com.tampahackerspace.codenet;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -133,6 +136,56 @@ public class MainActivity extends AppCompatActivity {
         mOverlay.setFocusItemsOnTap(true);
 
         map.getOverlays().add(mOverlay);
+
+
+        // See if we can start the SDR
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("iqsrc://-a 127.0.0.1 -p 1234 -n 1"));
+        startActivityForResult(intent, 1234);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != 1234) {
+            Log.i("SDR", "got request that didn't match");
+            return; // This is the requestCode that was used with startActivityForResult
+        }
+        if (resultCode == RESULT_OK) {
+            Log.i("SDR","RESULT OK");
+            // Connection with device has been opened and the rtl-tcp server is running. You are now responsible for connecting.
+            //int[] supportedTcpCommands = data.getIntArrayExtra("supportedTcpCommands");
+            //startTcp(supportedTcpCommands); // Start your TCP client, see section below
+        } else {
+            // err_info from RTL2832U:
+            String[] rtlsdrErrInfo = {
+                    "permission_denied",
+                    "root_required",
+                    "no_devices_found",
+                    "unknown_error",
+                    "replug",
+                    "already_running"};
+
+            int errorId = -1;
+            int exceptionCode = 0;
+            String detailedDescription = null;
+            if(data != null) {
+                errorId = data.getIntExtra("marto.rtl_tcp_andro.RtlTcpExceptionId", -1);
+                exceptionCode = data.getIntExtra("detailed_exception_code", 0);
+                detailedDescription = data.getStringExtra("detailed_exception_message");
+            }
+            String errorMsg = "ERROR NOT SPECIFIED";
+            if(errorId >= 0 && errorId < rtlsdrErrInfo.length)
+                errorMsg = rtlsdrErrInfo[errorId];
+
+            Log.e("SDR", "onActivityResult: RTL2832U driver returned with error: " + errorMsg + " ("+errorId+")"
+                    + (detailedDescription != null ? ": " + detailedDescription + " (" + exceptionCode + ")" : ""));
+
+
+            Log.i("SDR","RESULT NOT OK");
+            // something went wrong, and the driver failed to start
+            String errmsg = data.getStringExtra("detailed_exception_message");
+            //showErrorMessage(errmsg); // Show the user why something went wrong
+        }
     }
 
 
