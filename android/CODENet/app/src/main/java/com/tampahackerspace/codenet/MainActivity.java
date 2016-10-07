@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.PathOverlay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,10 +117,48 @@ public class MainActivity extends AppCompatActivity {
         GeoPoint startPoint = new GeoPoint(27.953641,-82.5266934);
         mapController.setCenter(startPoint);
 
+        GeoPoint ptAirport = new GeoPoint(27.977330, -82.535052);
+        GeoPoint ptHackerspace = new GeoPoint(27.954442, -82.527487);
+        GeoPoint ptMall = new GeoPoint(27.963240, -82.517957);
+        GeoPoint ptGreenThree = new GeoPoint(27.958900, -82.525316);
+        GeoPoint ptRedOne = new GeoPoint(27.953543, -82.528260);
 
         //your items
         ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
-        items.add(new OverlayItem("CODENet", "Market Square", new GeoPoint(27.953641,-82.5266934))); // Lat/Lon decimal degrees
+        OverlayItem overlayItem;
+        Drawable newMarker;
+        overlayItem = new OverlayItem("CODENet", "Airport", ptAirport); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.raspi);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
+        overlayItem = new OverlayItem("CODENet", "Market Square", ptMall); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.raspi);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
+        overlayItem = new OverlayItem("CODENet", "Compound", ptHackerspace); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.raspi);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
+        overlayItem = new OverlayItem("Operater", "Red One", ptRedOne); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.android);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
+        overlayItem = new OverlayItem("Operater", "Green Three", ptGreenThree); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.android);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
+        PathOverlay myPath = new PathOverlay(Color.RED, this);
+        myPath.addPoint(ptMall);
+        myPath.addPoint(ptAirport);
+        myPath.addPoint(ptHackerspace);
+        myPath.addPoint(ptMall);
+        map.getOverlays().add(myPath);
+
 
 //the overlay
         ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(items,
