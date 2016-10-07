@@ -21,6 +21,12 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.PathOverlay;
 
+//import org.osmdroid.tileprovider.cachemanager.CacheManager;
+
+import org.osmdroid.bonuspack.routing.RoadManager;
+import org.osmdroid.bonuspack.routing.OSRMRoadManager;
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,20 +119,42 @@ public class MainActivity extends AppCompatActivity {
         IMapController mapController = map.getController();
         mapController.setZoom(17);
 
+/*
+        BoundingBoxE6 boxE6 = new BoundingBoxE6(51.758971, 7.100778, 50.653902, 6.689312);
+        CacheManager cacheManager = new CacheManager(map);
+        cacheManager.downloadAreaAsync(getActivity(), boxE6, 13, 15);
+*/
+
+        // Mock our current location for demo
         //GeoPoint startPoint = new GeoPoint(48.8583, 2.2944);
-        GeoPoint startPoint = new GeoPoint(27.953641,-82.5266934);
+        GeoPoint startPoint = new GeoPoint(27.956271, -82.524153);
         mapController.setCenter(startPoint);
 
+
+
+        // Some mesh node locations
         GeoPoint ptAirport = new GeoPoint(27.977330, -82.535052);
         GeoPoint ptHackerspace = new GeoPoint(27.954442, -82.527487);
         GeoPoint ptMall = new GeoPoint(27.963240, -82.517957);
+        GeoPoint ptSofwerx = new GeoPoint(27.9620177,-82.479592);
+
+        // Some leaf node locations
         GeoPoint ptGreenThree = new GeoPoint(27.958900, -82.525316);
         GeoPoint ptRedOne = new GeoPoint(27.953543, -82.528260);
+
+
 
         //your items
         ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
         OverlayItem overlayItem;
         Drawable newMarker;
+
+
+        overlayItem = new OverlayItem("You", "", startPoint); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.target);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
         overlayItem = new OverlayItem("CODENet", "Airport", ptAirport); // Lat/Lon decimal degrees
         newMarker = this.getDrawable(R.drawable.raspi);
         overlayItem.setMarker(newMarker);
@@ -142,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
         overlayItem.setMarker(newMarker);
         items.add(overlayItem);
 
+        overlayItem = new OverlayItem("CODENet", "Shop", ptSofwerx); // Lat/Lon decimal degrees
+        newMarker = this.getDrawable(R.drawable.raspi);
+        overlayItem.setMarker(newMarker);
+        items.add(overlayItem);
+
         overlayItem = new OverlayItem("Operater", "Red One", ptRedOne); // Lat/Lon decimal degrees
         newMarker = this.getDrawable(R.drawable.android);
         overlayItem.setMarker(newMarker);
@@ -152,12 +185,22 @@ public class MainActivity extends AppCompatActivity {
         overlayItem.setMarker(newMarker);
         items.add(overlayItem);
 
+        // Link some mesh nodes together
         PathOverlay myPath = new PathOverlay(Color.RED, this);
         myPath.addPoint(ptMall);
         myPath.addPoint(ptAirport);
         myPath.addPoint(ptHackerspace);
         myPath.addPoint(ptMall);
         map.getOverlays().add(myPath);
+
+        myPath = new PathOverlay(Color.MAGENTA, this);
+        myPath.addPoint(ptSofwerx);
+        myPath.addPoint(ptHackerspace);
+        map.getOverlays().add(myPath);
+
+
+        RoadManager roadManager = new OSRMRoadManager(this);
+
 
 
 //the overlay
@@ -178,10 +221,14 @@ public class MainActivity extends AppCompatActivity {
         map.getOverlays().add(mOverlay);
 
 
-        // See if we can start the SDR
-        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("iqsrc://-a 127.0.0.1 -p 1234 -n 1"));
-        startActivityForResult(intent, 1234);
+        try {
+            // See if we can start the SDR
+            Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse("iqsrc://-a 127.0.0.1 -p 1234 -n 1"));
+            startActivityForResult(intent, 1234);
 
+        } catch (Exception e) {
+            Log.e("SDR", "Exception: " + e.toString());
+        }
     }
 
     @Override

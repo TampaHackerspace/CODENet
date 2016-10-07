@@ -1,3 +1,10 @@
+
+adb tcpip 5555
+adb connect 10.255.0.157:5555
+
+exit
+
+
 See forum post Any way to view Android screen remotely without root? - Post #9.
 
 Connect the device via USB and make sure debugging is working.
