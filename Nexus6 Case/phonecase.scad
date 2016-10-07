@@ -78,7 +78,7 @@ difference()
 
 //    Notch out space for the usb OTG cable
 
-   translate([8,-phoneY/2+1,5]) unroundedCube(44,20,14,0);
+   translate([8,-phoneY/2+1,5]) unroundedCube(44,20,16,0);
 
 // a little support
     
@@ -86,10 +86,10 @@ difference()
 }
 //   #color("red") translate([-phoneX/2.0,-phoneY/2.0,caseFloor+sdrZ]) cube([phoneX,phoneY,phoneZ*2]);
 
-   translate([8,-phoneY/2+1,5]) unroundedCube(0.3,20,14,0);
-   translate([16,-phoneY/2+1,5]) unroundedCube(0.3,20,14,0);
-   translate([24,-phoneY/2+1,5]) unroundedCube(0.3,20,14,0);
-   translate([0,-phoneY/2+1,5]) unroundedCube(0.3,20,14,0);
-   translate([-8,-phoneY/2+1,5]) unroundedCube(0.3,20,14,0);
+   translate([8,-phoneY/2+1,5]) unroundedCube(0.3,20,16,0);
+   translate([16,-phoneY/2+1,5]) unroundedCube(0.3,20,16,0);
+   translate([24,-phoneY/2+1,5]) unroundedCube(0.3,20,16,0);
+   translate([0,-phoneY/2+1,5]) unroundedCube(0.3,20,16,0);
+   translate([-8,-phoneY/2+1,5]) unroundedCube(0.3,20,16,0);
 
 
